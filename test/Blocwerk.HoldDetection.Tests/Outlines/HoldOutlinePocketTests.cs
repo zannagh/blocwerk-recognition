@@ -18,7 +18,7 @@ public class HoldOutlinePocketTests(ITestOutputHelper output)
     // Off the seed core: a dark pocket AT the core would be sampled as the hold colour itself.
     private static readonly Point PocketCentre = new(350, 250);
 
-    [Fact]
+    [OpenCvFact]
     public void SyntheticDonut_ThroughHole_IsKeptAsOneRing()
     {
         using Mat img = PaintDonut(HoleFill.Wall, out Point[] outer, out Point[] hole);
@@ -40,7 +40,7 @@ public class HoldOutlinePocketTests(ITestOutputHelper output)
         Assert.True(result.Fingerprint.AreaPx > result.AreaPx, "fingerprint must be measured on the filled outline");
     }
 
-    [Fact]
+    [OpenCvFact]
     public void SyntheticDeepDarkPocket_IsKeptAsAHole()
     {
         using Mat img = PaintDonut(HoleFill.DarkPocket, out Point[] outer, out Point[] hole, PocketCentre);
@@ -51,7 +51,7 @@ public class HoldOutlinePocketTests(ITestOutputHelper output)
         Assert.True(SyntheticWall.IoU(hole, ToPixels(result.ShapeHoles![0], result, img), img.Size()) >= 0.6);
     }
 
-    [Theory]
+    [OpenCvTheory]
     [InlineData(40, 40, 200)]
     [InlineData(200, 90, 30)]
     [InlineData(235, 238, 240)]
@@ -65,7 +65,7 @@ public class HoldOutlinePocketTests(ITestOutputHelper output)
         Assert.Null(Outline(img, outer).ShapeHoles);
     }
 
-    [Theory]
+    [OpenCvTheory]
     [InlineData("green")]
     [InlineData("white")]
     [InlineData("shadowGreen")]
@@ -80,7 +80,7 @@ public class HoldOutlinePocketTests(ITestOutputHelper output)
         Assert.Null(result.ShapeHoles);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void RealDonutNextToMarker_GetsItsHoleInTheRightPlace()
     {
         var (result, _, w, h) = HoldFixtures.Outline(HoldFixtures.Donut2770);
@@ -98,7 +98,7 @@ public class HoldOutlinePocketTests(ITestOutputHelper output)
         Assert.InRange(Cv2.ContourArea(ring), 800, 6000);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void Fingerprint_IsNearIdentical_WithAndWithoutTheHoleDetected()
     {
         // Same hold twice: once the hole shows the wall (detected), once its floor reads as hold (not detected).

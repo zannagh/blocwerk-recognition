@@ -18,7 +18,7 @@ public class MarkerCornerRefinerTests
     /// makes of them on the same crop. In the reference's sub-pixel mode the port must land within
     /// 0.5 px of it (measured: 0.0004 px).
     /// </summary>
-    [Theory]
+    [OpenCvTheory]
     [MemberData(nameof(ParityImages))]
     public void RealCrop_MatchesThePythonReference(string file)
     {
@@ -42,7 +42,7 @@ public class MarkerCornerRefinerTests
         }
     }
 
-    [Fact]
+    [OpenCvFact]
     public void Synthetic_ScrewHeadsAndPaperEdge_RefinedCornersBeatArucoAndHitTheTruth()
     {
         using var scene = ScrewedMarkerScene.Create(ObliqueView, new Size(400, 380));
@@ -63,7 +63,7 @@ public class MarkerCornerRefinerTests
     /// A head-on view puts every side within a pixel of axis-aligned. The reference's parabola then
     /// snaps edge samples to pixel cells and shifts the corners by ~0.5 px; the default centroid does not.
     /// </summary>
-    [Fact]
+    [OpenCvFact]
     public void AxisAlignedSides_CentroidAvoidsThePixelStaircase()
     {
         Point2f[] headOn = [new(20, 20), new(370, 20), new(370, 350), new(20, 350)];
@@ -77,7 +77,7 @@ public class MarkerCornerRefinerTests
         Assert.True(parabola.Average() > 0.4, $"parabola mean error only {parabola.Average():F3} px");
     }
 
-    [Fact]
+    [OpenCvFact]
     public void SyntheticCorner_IsKeptVerbatimAndFlagged()
     {
         using var scene = ScrewedMarkerScene.Create(ObliqueView, new Size(400, 380));
@@ -91,7 +91,7 @@ public class MarkerCornerRefinerTests
         Assert.Equal(0.0, result.ShiftPx[2]);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void MarkerCutByTheFrame_KeepsTheOffImageCorner()
     {
         // The canvas is shifted so the marker's TL corner falls left of the photo.
@@ -108,7 +108,7 @@ public class MarkerCornerRefinerTests
         Assert.True(Distance(result.Corners[2], new MarkerPoint(scene.TruthCorners[2].X, scene.TruthCorners[2].Y)) < 0.5);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void TooSmallMarker_KeepsAllCorners()
     {
         using var gray = new Mat(new Size(100, 100), MatType.CV_8UC1, Scalar.All(200));
@@ -121,7 +121,7 @@ public class MarkerCornerRefinerTests
         Assert.Null(result.ResidualPx);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void NoEdges_FitFailsAndKeepsTheOriginal()
     {
         using var gray = new Mat(new Size(200, 200), MatType.CV_8UC1, Scalar.All(200));
@@ -134,7 +134,7 @@ public class MarkerCornerRefinerTests
         Assert.Equal(0, result.RefinedCount);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void RefineAll_LeavesSyntheticMarkersAloneAndUpdatesDerivedFields()
     {
         using var scene = ScrewedMarkerScene.Create(ObliqueView, new Size(400, 380));

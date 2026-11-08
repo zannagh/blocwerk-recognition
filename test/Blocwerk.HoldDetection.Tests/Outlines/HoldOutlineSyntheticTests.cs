@@ -11,7 +11,7 @@ namespace Blocwerk.HoldDetection.Tests.Outlines;
 /// <summary>Outlines against synthetic holds with known masks, the ShapePoint convention, and timing.</summary>
 public class HoldOutlineSyntheticTests(ITestOutputHelper output)
 {
-    [Theory]
+    [OpenCvTheory]
     [InlineData(40, 40, 200, 0)] // red hold
     [InlineData(200, 90, 30, 0)] // blue hold
     [InlineData(40, 40, 200, 22)] // red hold with a cast shadow below it
@@ -34,7 +34,7 @@ public class HoldOutlineSyntheticTests(ITestOutputHelper output)
         Assert.InRange(result.AreaPx / Cv2.ContourArea(truth), 0.85, 1.15);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void ShapePoints_FollowTheRendererConvention_OnANonSquareImage()
     {
         // 4:3 like the phone photos, so a wrong axis normalization would show up.
@@ -74,7 +74,7 @@ public class HoldOutlineSyntheticTests(ITestOutputHelper output)
         Assert.True(SyntheticWall.IoU(truth, rendered, img.Size()) >= 0.85);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void SeedOffTheImage_ReturnsZeroConfidenceFallback()
     {
         using Mat img = SyntheticWall.Wood(200, 200);
@@ -87,7 +87,7 @@ public class HoldOutlineSyntheticTests(ITestOutputHelper output)
         Assert.Null(result.ShapePoints);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void FullResolutionPhoto_OutlinesEachHoldWithinBudget()
     {
         using Mat img = SyntheticWall.Wood(4032, 3024);

@@ -31,7 +31,9 @@ dotnet build Blocwerk.Recognition.slnx
 dotnet test Blocwerk.Recognition.slnx
 ```
 
-OpenCV's native library is only shipped for Linux on the 4.13 line, so the OpenCV tests fail with `DllNotFoundException` on macOS. A Mac build uses the older osx_arm64 runtime (4.8.1) instead, which may or may not load on your machine. CI runs everything on Linux.
+OpenCV's native library ships for Linux only (the 4.13 runtimes the package depends on), so the tests that need it are marked `[OpenCvFact]`/`[OpenCvTheory]` and skip on macOS. CI runs everything on Linux. A Mac build still compiles against the older osx_arm64 line (4.8.1), but its native library does not load reliably.
+
+**Local development on a Mac** runs recognition through the worker container, the arm64 image: start Blocwerk with `RECOGNITION__MODE=queue` and an instance key, then the worker as below with `--platform linux/arm64` and the same `RECOGNITION__INSTANCEKEY`. Blocwerk's README has the two commands.
 
 ## Running the worker locally
 

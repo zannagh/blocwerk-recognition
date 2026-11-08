@@ -19,7 +19,7 @@ public class SegmentedOutlinerTests(OnnxRuntimeFixture onnx)
 {
     private static readonly HoldSegmenterSettings Settings = new() { Threads = 2 };
 
-    [Fact]
+    [OpenCvFact]
     public void ModelFilesThatCannotBeLoaded_AreLogged_AndTheHoldIsOutlinedByColour()
     {
         _ = onnx;

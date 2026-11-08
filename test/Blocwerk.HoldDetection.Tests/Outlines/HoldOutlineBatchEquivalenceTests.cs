@@ -16,7 +16,7 @@ namespace Blocwerk.HoldDetection.Tests.Outlines;
 /// </summary>
 public class HoldOutlineBatchEquivalenceTests
 {
-    [Fact]
+    [OpenCvFact]
     public async Task Separately_EqualsOutliningEachSeedOnASession()
     {
         var (photo, seeds) = Wall();
@@ -29,7 +29,7 @@ public class HoldOutlineBatchEquivalenceTests
         Assert.Equal(seeds.Select(s => Json(session.Outline(s))), batch.Outlines.Select(Json));
     }
 
-    [Fact]
+    [OpenCvFact]
     public async Task Jointly_EqualsTheSessionsJointOutlining()
     {
         var (photo, seeds) = Wall();

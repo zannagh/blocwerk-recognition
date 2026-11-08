@@ -7,7 +7,7 @@ namespace Blocwerk.HoldDetection.Tests.Outlines;
 /// <summary>Outline behaviour on crops of the owner's real wall photos (see <see cref="HoldFixtures"/>).</summary>
 public class HoldOutlineRealPhotoTests
 {
-    [Theory]
+    [OpenCvTheory]
     [InlineData("green")]
     [InlineData("white")]
     [InlineData("shadowGreen")]
@@ -37,7 +37,7 @@ public class HoldOutlineRealPhotoTests
         Assert.True(bb.Top >= f.Top - (0.2 * f.Height) && bb.Bottom <= f.Top + (1.2 * f.Height), $"y-extent {bb}");
     }
 
-    [Fact]
+    [OpenCvFact]
     public void WhiteChalkyHold_IsOutlinedNotFallback()
     {
         var (result, _, _, _) = HoldFixtures.Outline(HoldFixtures.White);
@@ -46,7 +46,7 @@ public class HoldOutlineRealPhotoTests
         Assert.True(result.Fingerprint.Histogram[HoldFingerprint.HueBins] > 0.5, "a white hold is mostly neutral");
     }
 
-    [Theory]
+    [OpenCvTheory]
     [InlineData("bigVolume")]
     [InlineData("smallVolume")]
     public void WoodenVolume_FallsBackToCircle_WithLowConfidence(string key)
@@ -58,7 +58,7 @@ public class HoldOutlineRealPhotoTests
         Assert.Null(result.ShapePoints);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void ShadowBelowHoldOnOverhang_IsNotPartOfTheOutline()
     {
         // The green hold's box ends at y=240; its cast shadow runs ~20 px further down the plywood.
@@ -69,7 +69,7 @@ public class HoldOutlineRealPhotoTests
         Assert.True(bb.Bottom <= f.Top + f.Height + 6, $"outline bottom {bb.Bottom} runs into the shadow (box bottom {f.Top + f.Height})");
     }
 
-    [Fact]
+    [OpenCvFact]
     public void HoldTouchingAMarker_DoesNotSwallowIt()
     {
         // The yellow donut in IMG_2770 touches a black-and-white ArUco marker to its right.

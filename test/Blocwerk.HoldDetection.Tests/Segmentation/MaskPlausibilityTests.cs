@@ -10,7 +10,7 @@ namespace Blocwerk.HoldDetection.Tests.Segmentation;
 /// <summary>A hold is a solid body: thin spikes go, narrow slits close, and a hold that is thin as a whole stays.</summary>
 public class MaskPlausibilityTests
 {
-    [Fact]
+    [OpenCvFact]
     public void AThinSpike_IsTakenOff()
     {
         using Mat mask = Blank();
@@ -24,7 +24,7 @@ public class MaskPlausibilityTests
         Assert.InRange(Cv2.CountNonZero(mask), 0.95 * Math.PI * 1600, 1.05 * Math.PI * 1600);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void ANarrowSlit_IsClosed()
     {
         using Mat mask = Blank();
@@ -36,7 +36,7 @@ public class MaskPlausibilityTests
         Assert.Equal(255, mask.At<byte>(90, 100));
     }
 
-    [Fact]
+    [OpenCvFact]
     public void ARail_ThatIsThinAsAWhole_KeepsItsLength()
     {
         using Mat mask = Blank();
@@ -50,7 +50,7 @@ public class MaskPlausibilityTests
         Assert.Equal(255, mask.At<byte>(100, 170));
     }
 
-    [Fact]
+    [OpenCvFact]
     public void ARealConcaveShape_IsNotFilledIn()
     {
         // A crescent: the bay is as wide as the hold, so it is the hold's shape and not a slit.
@@ -63,7 +63,7 @@ public class MaskPlausibilityTests
         Assert.Equal(0, mask.At<byte>(60, 100));
     }
 
-    [Fact]
+    [OpenCvFact]
     public void ANotchCutIntoAnEdge_IsFilled()
     {
         using Mat mask = Blank();

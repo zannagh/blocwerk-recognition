@@ -23,7 +23,7 @@ public class MarkerQuietZoneCheckTests
 
     private static readonly MarkerPoint[] Square = [new(100, 100), new(220, 100), new(220, 220), new(100, 220)];
 
-    [Fact]
+    [OpenCvFact]
     public void AFalseIdOnABlackHold_HasNoQuietZone()
     {
         using var gray = Cv2.ImRead(Path.Combine(GlyphDir, "img2803-false17-hold.png"), ImreadModes.Grayscale);
@@ -37,7 +37,7 @@ public class MarkerQuietZoneCheckTests
         Assert.Equal(MarkerRejectionReason.NoQuietZone, Assert.Single(rejected).Reason);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void ARealMarkerInTheSamePhoto_IsKept()
     {
         using var gray = Cv2.ImRead(Path.Combine(GlyphDir, "img2803-marker12.png"), ImreadModes.Grayscale);
@@ -48,7 +48,7 @@ public class MarkerQuietZoneCheckTests
         Assert.Single(MarkerQuietZoneCheck.Filter(gray, [Marker(12, Real12)]).Kept);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void AMarkerMostlyOutsideTheFrame_IsNotJudged()
     {
         using var gray = new Mat(new Size(200, 200), MatType.CV_8UC1, Scalar.All(0));
@@ -57,7 +57,7 @@ public class MarkerQuietZoneCheckTests
         Assert.Null(MarkerQuietZoneCheck.Contrast(gray, offFrame));
     }
 
-    [Fact]
+    [OpenCvFact]
     public void ABlackSquareOnAGreyHold_PassesTheLegacyFloorButNotThePlanFloor()
     {
         // Border 40, white cells 200, surroundings 50: contrast (50 − 40) / (200 − 40) ≈ 0.06, like the ring hold.
@@ -72,7 +72,7 @@ public class MarkerQuietZoneCheckTests
         Assert.Contains("no white border", Assert.Single(rejected).Detail);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void ADarkQuadWithoutAPattern_IsRejected()
     {
         // A green hold read as id 17: "white" cells barely lighter than the border, bright wood around it.
@@ -84,7 +84,7 @@ public class MarkerQuietZoneCheckTests
         Assert.Contains("no black-and-white pattern", Assert.Single(rejected).Detail);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void APrintedMarkerOnWhitePaper_PassesThePlanFloor()
     {
         using var gray = Scene(background: 210, border: 30, white: 220);

@@ -30,7 +30,7 @@ public class DecodePixelLimitTests
         Assert.Throws<ArgumentException>(() => new OpenCvHoldOutlineService().OpenSession(PngClaiming(20_000, 20_000)));
     }
 
-    [Fact]
+    [OpenCvFact]
     public async Task NormalSizes_StillDecode()
     {
         var png = PngClaiming(64, 48, keepPixels: true);

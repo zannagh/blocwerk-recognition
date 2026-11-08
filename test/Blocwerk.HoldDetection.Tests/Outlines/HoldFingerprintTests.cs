@@ -6,7 +6,7 @@ namespace Blocwerk.HoldDetection.Tests.Outlines;
 /// <summary>Fingerprint similarity on real crops, metric sizes, and JSON storage.</summary>
 public class HoldFingerprintTests
 {
-    [Fact]
+    [OpenCvFact]
     public void SameHoldInTwoPhotos_BeatsDifferentHoldOfSimilarColour()
     {
         // The blue crescent from IMG_2770 (seen from below) and IMG_2783 (frontal) vs a different, rounder
@@ -24,7 +24,7 @@ public class HoldFingerprintTests
         Assert.True(same >= HoldRelocationMatcher.DefaultMinScore, $"same={same:F3}");
     }
 
-    [Fact]
+    [OpenCvFact]
     public void Similarity_IsSymmetric_AndOneForIdentical()
     {
         HoldFingerprint a = HoldFixtures.Outline(HoldFixtures.Green).Result.Fingerprint;
@@ -54,7 +54,7 @@ public class HoldFingerprintTests
         Assert.Null(HoldFingerprintSimilarity.SizeScore(big, noMm));
     }
 
-    [Fact]
+    [OpenCvFact]
     public void Json_RoundTrips()
     {
         HoldFingerprint fp = HoldFixtures.Outline(HoldFixtures.Green).Result.Fingerprint with { WidthMm = 180.5 };
@@ -82,7 +82,7 @@ public class HoldFingerprintTests
         Assert.Null(HoldFingerprint.FromJson(json));
     }
 
-    [Fact]
+    [OpenCvFact]
     public void Histogram_IsNormalised()
     {
         HoldFingerprint fp = HoldFixtures.Outline(HoldFixtures.Crescent2783).Result.Fingerprint;

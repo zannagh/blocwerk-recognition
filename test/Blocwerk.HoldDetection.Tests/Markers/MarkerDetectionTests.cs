@@ -12,7 +12,7 @@ public class MarkerDetectionTests
     /// Crops of the owner's wall photos (capture 1, 2026-09-22), downscaled. Expected ids come
     /// from tools/glyph/detections.json for the markers fully inside each crop.
     /// </summary>
-    [Theory]
+    [OpenCvTheory]
     [InlineData("img2772-kickboard-seam.jpg", new[] { 2, 7, 8, 33 })]
     [InlineData("img2771-seam-small.jpg", new[] { 2, 7, 8, 33 })]
     [InlineData("img2783-topleft.jpg", new[] { 0, 5, 12 })]
@@ -33,7 +33,7 @@ public class MarkerDetectionTests
         });
     }
 
-    [Fact]
+    [OpenCvFact]
     public void OutOfRangeId_IsRejectedWithReason()
     {
         using var scene = Scene([new PlacedMarker(3, 100, 100), new PlacedMarker(40, 500, 100)]);
@@ -47,7 +47,7 @@ public class MarkerDetectionTests
         Assert.False(result.Suspicious);
     }
 
-    [Fact]
+    [OpenCvFact]
     public void DuplicateId_RejectsTheWorseCandidateAndFlagsTheImage()
     {
         // Same id twice: a big one and a small one. The small one must lose.
