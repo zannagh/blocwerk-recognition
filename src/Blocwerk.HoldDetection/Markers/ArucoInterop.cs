@@ -10,7 +10,7 @@ namespace Blocwerk.HoldDetection.Markers;
 /// Linux containers (4.13) only have the <c>ArucoDetector</c> class + <c>PredefinedDictionaryType</c>.
 /// Both native runtimes export the matching entry points (verified with nm).
 /// </summary>
-internal static class ArucoInterop
+public static class ArucoInterop
 {
     /// <summary>Creates the DICT_4X4_50 dictionary. Caller disposes.</summary>
     public static Dictionary CreateDict4X4With50()

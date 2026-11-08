@@ -3,7 +3,7 @@ using OpenCvSharp;
 namespace Blocwerk.HoldDetection.Matching;
 
 /// <summary>3×3 homogeneous matrices as plain arrays, the form <see cref="HomographyHelper"/> uses.</summary>
-internal static class Mat3
+public static class Mat3
 {
     /// <summary>A resize by <paramref name="s"/> in OpenCV's pixel-centre convention: <c>x' = (x + 0.5)·s − 0.5</c>.</summary>
     /// <param name="s">The scale.</param>

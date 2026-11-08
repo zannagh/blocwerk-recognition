@@ -10,10 +10,10 @@ namespace Blocwerk.HoldDetection.Matching;
 /// unassigned becomes a proposal — at confirm-tier confidence, flagged <c>Rescue = "wallspace"</c> — and
 /// only when the warp field does not place it wildly off.
 /// </summary>
-internal static class AnchorReconciler
+public static class AnchorReconciler
 {
     /// <summary>Rescue tag of an anchor-added proposal.</summary>
-    internal const string RescueTag = "wallspace";
+    public const string RescueTag = "wallspace";
 
     private const int MaxLoggedConflicts = 10;
 
@@ -21,7 +21,7 @@ internal static class AnchorReconciler
     internal readonly record struct Outcome(int Agreed, int Conflicts, int Added, int Rejected);
 
     /// <summary>Applies the anchors to <paramref name="proposals"/> (and the parallel <paramref name="diags"/>).</summary>
-    public static Outcome Apply(
+    internal static Outcome Apply(
         IReadOnlyList<HoldOverlapAnchor> anchors,
         IReadOnlyList<MatcherHold> leftHolds,
         IReadOnlyList<MatcherHold> rightHolds,

@@ -8,7 +8,7 @@ namespace Blocwerk.HoldDetection.Matching;
 /// the actual correspondence geometry comes from the local warp field. Port of the Python
 /// <c>coarse_homography</c> with SIFT swapped for AKAZE (base-package constraint).
 /// </summary>
-internal static class HomographyHelper
+public static class HomographyHelper
 {
     /// <summary>
     /// Fewest RANSAC inliers a coarse homography needs to be trusted. Measured: unrelated/barely-overlapping

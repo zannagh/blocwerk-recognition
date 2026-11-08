@@ -18,7 +18,7 @@ namespace Blocwerk.HoldDetection.Outlines;
 /// </list>
 /// A hold of two colours, or one with a large bolt hole, fails these too. That only costs it the bulk step.
 /// </summary>
-internal static class OutlineContent
+public static class OutlineContent
 {
     /// <summary>The share of an outline that may be dark and on its lower side.</summary>
     public const double MaxDarkLowerShare = 0.08;

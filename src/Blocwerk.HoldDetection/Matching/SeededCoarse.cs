@@ -9,7 +9,7 @@ namespace Blocwerk.HoldDetection.Matching;
 /// images in the RAW frame, turning the normalized seed homography into pixels, and choosing between the
 /// seed and the texture (AKAZE) coarse homography. Never used without a seed.
 /// </summary>
-internal static class SeededCoarse
+public static class SeededCoarse
 {
     /// <summary>Seed and AKAZE "disagree wildly" above this fraction of the right image diagonal.</summary>
     internal const double DisagreementFraction = 0.05;

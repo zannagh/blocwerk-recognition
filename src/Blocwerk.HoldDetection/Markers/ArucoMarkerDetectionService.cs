@@ -32,7 +32,7 @@ public sealed class ArucoMarkerDetectionService : IMarkerDetectionService
     }
 
     /// <summary>Detects and validates markers in an already-decoded 8-bit grayscale image.</summary>
-    internal static MarkerDetectionResult Detect(Mat gray, MarkerDetectionOptions options)
+    public static MarkerDetectionResult Detect(Mat gray, MarkerDetectionOptions options)
     {
         using var dictionary = ArucoInterop.CreateDict4X4With50();
         var parameters = ArucoInterop.CreateTunedParameters();
