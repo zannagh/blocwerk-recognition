@@ -73,8 +73,9 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          # A prerelease gets only its version tag; :latest stays on the last full release.
           tags: |
-            type=raw,value=latest
+            type=raw,value=latest,enable=${{ !github.event.release.prerelease }}
             type=raw,value=${{ steps.version.outputs.semVer }}
 
       # The recognition worker, multi-arch: one amd64 builder cross-builds linux/amd64 and linux/arm64.
