@@ -1,3 +1,6 @@
+// Copyright (c) 2026, zannagh. All rights reserved.
+// See License in the project root for license information.
+
 using Blocwerk.Core.Abstractions;
 using Blocwerk.Core.Detection.Outlines;
 using Blocwerk.Core.Entities;

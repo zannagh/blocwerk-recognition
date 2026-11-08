@@ -1,3 +1,6 @@
+// Copyright (c) 2026, zannagh. All rights reserved.
+// See License in the project root for license information.
+
 namespace Blocwerk.Core.Detection.Outlines;
 
 /// <summary>A proposed "this is the same physical hold, moved" pair.</summary>

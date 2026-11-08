@@ -1,3 +1,6 @@
+// Copyright (c) 2026, zannagh. All rights reserved.
+// See License in the project root for license information.
+
 namespace Blocwerk.Core.Abstractions;
 
 /// <summary>A point in image pixel coordinates (or normalized 0..1 when stated).</summary>

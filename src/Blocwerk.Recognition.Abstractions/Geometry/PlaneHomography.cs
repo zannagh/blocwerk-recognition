@@ -1,3 +1,6 @@
+// Copyright (c) 2026, zannagh. All rights reserved.
+// See License in the project root for license information.
+
 namespace Blocwerk.Core.Geometry;
 
 /// <summary>One point pair for a homography fit: source (x, y) maps to destination (x, y).</summary>

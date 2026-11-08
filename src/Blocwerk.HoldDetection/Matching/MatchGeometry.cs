@@ -1,3 +1,6 @@
+// Copyright (c) 2026, zannagh. All rights reserved.
+// See License in the project root for license information.
+
 namespace Blocwerk.HoldDetection.Matching;
 
 /// <summary>A 2D point in image pixels (double precision, matching the reference pipeline).</summary>
