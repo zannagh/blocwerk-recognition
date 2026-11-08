@@ -2,57 +2,66 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <PackageId>Blocwerk.HoldDetection</PackageId>
+    <Description>Blocwerk's hold recognition: ONNX (YOLO) hold detection with tiling, OpenCV outlines and segmentation, ArUco markers and cross-photo hold matching. Brings the OpenCV native runtimes for linux-x64 and linux-arm64 and the CPU ONNX runtime. Model files are not included.</Description>
+    <PackageTags>blocwerk;climbing;hold-recognition;opencv;onnx</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="YoloDotNet" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime" />
     <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" />
   </ItemGroup>
 
-  <!-- OpenCvSharp: the osx_arm64 native runtime only ships at 4.8.1, so the mac build
-       pins the managed assembly to the matching 4.8.x. The Docker build runs inside a
-       linux container and picks a linux runtime at the current 4.13 line.
-       Code only touches the 4.8.1 API surface so it runs on both. -->
+  <!-- OpenCvSharp: the osx_arm64 native runtime only ships at 4.8.1, so a mac build pins the
+       managed assembly to the matching 4.8.x ("osx" line). Every other build, and every package,
+       uses the linux runtimes at the current 4.13 line. Code only touches the 4.8.1 API surface
+       so it runs on both. Override with -p:BlocwerkOpenCvLine=linux to build the package line on a mac. -->
   <!-- ArUco is the one place the two lines are NOT source compatible: 4.8 exposes the free
        function CvAruco.DetectMarkers + PredefinedDictionaryName, 4.13 only the ArucoDetector
        class + PredefinedDictionaryType. Markers/ArucoInterop.cs switches on this symbol. -->
-  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+  <PropertyGroup>
+    <BlocwerkOpenCvLine Condition="'$(BlocwerkOpenCvLine)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">osx</BlocwerkOpenCvLine>
+    <BlocwerkOpenCvLine Condition="'$(BlocwerkOpenCvLine)' == ''">linux</BlocwerkOpenCvLine>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(BlocwerkOpenCvLine)' == 'osx'">
     <DefineConstants>$(DefineConstants);OPENCVSHARP_LEGACY_ARUCO</DefineConstants>
   </PropertyGroup>
-  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+  <ItemGroup Condition="'$(BlocwerkOpenCvLine)' == 'osx'">
     <PackageReference Include="OpenCvSharp4" VersionOverride="4.8.0.20230708" />
     <PackageReference Include="OpenCvSharp4.runtime.osx_arm64" />
   </ItemGroup>
 
-  <!-- Non-mac (i.e. container) builds must pick the native runtime matching the *target*
-       architecture, not the build host's: docker/Dockerfile cross-builds both linux/amd64
-       and linux/arm64 from a single amd64 builder via `dotnet restore/publish -a $TARGETARCH`.
-       `-a` sets RuntimeIdentifier as an evaluation-time global property (host OS + given
-       arch), so it is readable here; NETCoreSdkRuntimeIdentifier is the fallback for a plain
-       `dotnet build` with no `-a`, where RuntimeIdentifier is empty. -->
-  <PropertyGroup Condition="!$([MSBuild]::IsOSPlatform('OSX'))">
-    <BlocwerkNativeRuntimeId>$(RuntimeIdentifier)</BlocwerkNativeRuntimeId>
-    <BlocwerkNativeRuntimeId Condition="'$(BlocwerkNativeRuntimeId)' == ''">$(NETCoreSdkRuntimeIdentifier)</BlocwerkNativeRuntimeId>
-  </PropertyGroup>
-  <ItemGroup Condition="!$([MSBuild]::IsOSPlatform('OSX'))">
+  <!-- Both linux runtimes are dependencies, so they flow to every consumer of the package. Each ships its
+       library under runtimes/<rid>/native: a RID-specific restore/publish (docker builds use -a $TARGETARCH,
+       cross-building linux/arm64 on an amd64 builder) copies only the one matching the *target*
+       architecture, a portable build carries both and the host picks by RID. -->
+  <ItemGroup Condition="'$(BlocwerkOpenCvLine)' == 'linux'">
     <PackageReference Include="OpenCvSharp4" />
-    <PackageReference Include="OpenCvSharp4.runtime.linux-arm64"
-                     Condition="$(BlocwerkNativeRuntimeId.EndsWith('arm64'))" />
-    <PackageReference Include="OpenCvSharp4.official.runtime.linux-x64"
-                     Condition="!$(BlocwerkNativeRuntimeId.EndsWith('arm64'))" />
+    <PackageReference Include="OpenCvSharp4.runtime.linux-arm64" />
+    <PackageReference Include="OpenCvSharp4.official.runtime.linux-x64" />
   </ItemGroup>
 
-  <!-- Exclude GPU-only ONNX packages that YoloDotNet pulls in — they lack arm64 runtimes -->
+  <!-- A package built against the osx line would hand consumers the 4.8 managed assembly and no linux natives. -->
+  <Target Name="RefuseOsxLinePack" BeforeTargets="GenerateNuspec" Condition="'$(BlocwerkOpenCvLine)' == 'osx'">
+    <Error Text="Blocwerk.HoldDetection is packed against the linux OpenCvSharp line: pack with -p:BlocwerkOpenCvLine=linux." />
+  </Target>
+
+  <!-- Exclude GPU-only ONNX packages that YoloDotNet pulls in — they lack arm64 runtimes.
+       PrivateAssets keeps them out of the package's dependencies; a consumer must repeat these three
+       references (README, "Consuming the packages"), because YoloDotNet brings them in again there. -->
   <ItemGroup>
     <PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" ExcludeAssets="all" PrivateAssets="all" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu.Windows" ExcludeAssets="all" PrivateAssets="all" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu.Linux" ExcludeAssets="all" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- Models are not in git and never go into the package: mount or copy them where the settings point. -->
   <ItemGroup>
-    <Content Include="models\**\*.onnx" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="models\**\*.onnx" CopyToOutputDirectory="PreserveNewest" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>

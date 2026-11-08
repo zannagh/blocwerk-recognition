@@ -1,0 +1,46 @@
+<Project>
+  <ItemGroup>
+    <PackageVersion Include="Serilog" Version="4.2.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
+
+    <!-- HTTP -->
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.10" />
+
+    <!-- Hold Detection -->
+    <PackageVersion Include="YoloDotNet" Version="3.1.0" />
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.22.0" />
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.22.1" />
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime.Gpu.Windows" Version="1.22.1" />
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime.Gpu.Linux" Version="1.22.1" />
+    <PackageVersion Include="SkiaSharp" Version="3.119.1" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.1" />
+
+    <!-- OpenCvSharp for cross-image hold matching (big wall). The native runtime is picked
+         per target OS *and* architecture in Blocwerk.HoldDetection.csproj: osx_arm64 ships
+         at a different version line than the linux runtimes, so the csproj conditions on it.
+         The linux x64 runtime only exists as the "official" (portable RID, statically linked)
+         package — OpenCvSharp4.runtime.linux-x64 stalled at 4.10 and the ubuntu.*-x64 ones
+         at 4.6, so "official" is the only x64 build on the pinned 4.13 line. -->
+    <PackageVersion Include="OpenCvSharp4" Version="4.13.0.20260526" />
+    <PackageVersion Include="OpenCvSharp4.runtime.linux-arm64" Version="4.13.0.20260526" />
+    <PackageVersion Include="OpenCvSharp4.official.runtime.linux-x64" Version="4.13.0.20260526" />
+    <PackageVersion Include="OpenCvSharp4.runtime.osx_arm64" Version="4.8.1" />
+
+    <!-- Testing packages -->
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="xunit" Version="2.9.0" />
+    <PackageVersion Include="xunit.analyzers" Version="1.15.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageVersion Include="Xunit.SkippableFact" Version="1.5.23" />
+
+    <!-- Analyzers -->
+    <PackageVersion Include="Stylecop.Analyzers" Version="1.2.0-beta.556" />
+  </ItemGroup>
+</Project>

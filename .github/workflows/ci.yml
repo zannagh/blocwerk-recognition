@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # build/Versioning.targets runs GitVersion on Release builds, which needs the full history.
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: "global.json"
+
+      - name: Install GitVersion
+        run: dotnet tool install --global gitversion.tool
+
+      - name: Build
+        run: dotnet build Blocwerk.Recognition.slnx -c Release
+
+      # Tests that need the ONNX models skip without them: the models are not in git.
+      - name: Test
+        run: dotnet test Blocwerk.Recognition.slnx -c Release --no-build
+
+      # The packages must stay packable on every change, not only on a release.
+      - name: Pack
+        run: dotnet pack Blocwerk.Recognition.slnx -c Release --no-build -o "$RUNNER_TEMP/packages"

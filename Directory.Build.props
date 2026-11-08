@@ -1,0 +1,92 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)build\Versioning.targets"
+          Condition="Exists('$(MSBuildThisFileDirectory)build\Versioning.targets')" />
+
+  <PropertyGroup>
+    <Authors>Zannagh</Authors>
+    <Company>Blocwerk</Company>
+    <Copyright>Copyright © 2026 Zannagh</Copyright>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Some guys still use .NET 10.0.1xx on Linux/Mac which had incomplete prune package data -->
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory).stylecop.json" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <PublishReferencesDocumentationFiles>False</PublishReferencesDocumentationFiles>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SatelliteResourceLanguages>en-US;en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <Target Name="Echo build versions" AfterTargets="Build">
+    <Message Importance="high"
+             Text="Project $(ProjectName) built with file version $(FileVersion) and version $(Version)" />
+  </Target>
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);NU1507;NU5118;CS8032;SA1633;SA1402;SA1649;SA1201;SA1204;SA1117</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageFloatingVersionsEnabled>true</CentralPackageFloatingVersionsEnabled>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <IncludeSymbols>false</IncludeSymbols>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <!-- Package metadata. Only the projects that set IsPackable (Blocwerk.Recognition.Abstractions and
+       Blocwerk.HoldDetection) are packed; the release workflow passes the version from GitVersion. -->
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/zannagh/blocwerk-recognition</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zannagh/blocwerk-recognition</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="/" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="JetBrains.Annotations">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Stylecop.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Testing packages -->
+  <ItemGroup Label="Unit Test Packages" Condition="$(ProjectName.EndsWith('Tests'))">
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.analyzers" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Xunit.SkippableFact" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+</Project>

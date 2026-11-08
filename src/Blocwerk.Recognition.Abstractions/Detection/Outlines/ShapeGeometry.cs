@@ -3,7 +3,7 @@ namespace Blocwerk.Core.Detection.Outlines;
 /// <summary>A 2D point/vector used by the pure outline geometry (no OpenCV, no entities).</summary>
 /// <param name="X">X.</param>
 /// <param name="Y">Y.</param>
-internal readonly record struct P2(double X, double Y)
+public readonly record struct P2(double X, double Y)
 {
     public static P2 operator +(P2 a, P2 b) => new(a.X + b.X, a.Y + b.Y);
 
@@ -19,7 +19,7 @@ internal readonly record struct P2(double X, double Y)
 }
 
 /// <summary>Polygon helpers shared by the shape smoother and the overlap resolver.</summary>
-internal static class ShapeGeometry
+public static class ShapeGeometry
 {
     public static double SignedArea(IReadOnlyList<P2> poly)
     {

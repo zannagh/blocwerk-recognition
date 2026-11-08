@@ -11,7 +11,7 @@ using OpenCvSharp;
 namespace Blocwerk.HoldDetection.Segmentation;
 
 /// <summary>
-/// The box-prompted segmentation model (MobileSAM as two ONNX files, see tools/hold-eval/export_segmenter.py): an
+/// The box-prompted segmentation model (MobileSAM as two ONNX files, see tools/segmenter-export/export_segmenter.py): an
 /// encoder that turns a window of the photo into an embedding once, and a light decoder that answers "what is the
 /// object in this box" per hold. CPU only, loaded on first use, every call serialised (one photo at a time).
 /// </summary>

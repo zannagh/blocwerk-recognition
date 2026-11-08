@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Blocwerk.HoldDetection\Blocwerk.HoldDetection.csproj" />
-    <ProjectReference Include="..\..\src\Blocwerk.Core\Blocwerk.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

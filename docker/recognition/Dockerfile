@@ -1,5 +1,5 @@
 # The recognition worker (src/Blocwerk.Recognition.Worker): a runner for the recognition kinds, always on next to the app.
-# Multi-arch like docker/Dockerfile (one amd64 builder cross-builds linux/amd64 and linux/arm64). Models are NOT baked
+# Multi-arch like blocwerk's docker/Dockerfile (one amd64 builder cross-builds linux/amd64 and linux/arm64). Models are NOT baked
 # in: mount them read-only at /models (RECOGNITION__MODELSDIR). Build from the repo root:
 #   docker buildx build -f docker/recognition/Dockerfile --platform linux/amd64,linux/arm64 .
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
@@ -18,7 +18,7 @@ COPY src/Blocwerk.Recognition.Worker/ src/Blocwerk.Recognition.Worker/
 RUN dotnet publish src/Blocwerk.Recognition.Worker/Blocwerk.Recognition.Worker.csproj -c Release -o /app -a $TARGETARCH \
     && rm -f /app/models/*.onnx
 
-# Guard (as in docker/Dockerfile): the OpenCV native library must match $TARGETARCH (ELF e_machine at bytes 18-19).
+# Guard (as in blocwerk's docker/Dockerfile): the OpenCV native library must match $TARGETARCH (ELF e_machine at bytes 18-19).
 RUN set -eu; \
     so=/app/libOpenCvSharpExtern.so; \
     [ -f "$so" ] || { echo "guard: $so missing from publish output"; exit 1; }; \

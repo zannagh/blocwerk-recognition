@@ -1,7 +1,7 @@
 namespace Blocwerk.Core.Detection.Outlines;
 
 /// <summary>The individual clean-up passes of <see cref="HoldShapeSmoother"/>, on counter-clockwise polygons.</summary>
-internal static class ShapeSimplify
+public static class ShapeSimplify
 {
     /// <summary>Removes vertices whose two edges enclose less than <paramref name="minAngleDegrees"/> (spikes and sharp incuts).</summary>
     public static List<P2> RemoveSpikes(List<P2> poly, double minAngleDegrees)

@@ -2,17 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <PackageId>Blocwerk.Recognition.Abstractions</PackageId>
+    <Description>The contracts of Blocwerk's hold recognition: detection, outline, marker and matching interfaces, their result records, the recognition gate and the pure outline geometry. No OpenCV, no ONNX.</Description>
+    <PackageTags>blocwerk;climbing;hold-recognition</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="Blocwerk.Core" />
-    <InternalsVisibleTo Include="Blocwerk.Core.Tests" />
-    <InternalsVisibleTo Include="Blocwerk.HoldEval" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
   </ItemGroup>
 
 </Project>

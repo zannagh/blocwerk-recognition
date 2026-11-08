@@ -1,0 +1,89 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: zannagh/blocwerk-recognition
+  NUGET_SOURCE: https://nuget.pkg.github.com/zannagh/index.json
+
+jobs:
+  release:
+    name: Packages & Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: "global.json"
+
+      - name: Setup GitVersion
+        uses: gittools/actions/gitversion/setup@v4.2.0
+        with:
+          versionSpec: '6.x'
+
+      - name: Install GitVersion
+        run: dotnet tool install --global gitversion.tool
+
+      - name: Determine Version
+        id: version
+        uses: gittools/actions/gitversion/execute@v4.2.0
+
+      - name: Test
+        run: dotnet test Blocwerk.Recognition.slnx -c Release
+
+      # Blocwerk.Recognition.Abstractions and Blocwerk.HoldDetection (the only packable projects). A Release build takes
+      # its version from GitVersion (build/Versioning.targets), the same version the image is tagged with below.
+      - name: NuGet packages to GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          dotnet pack Blocwerk.Recognition.slnx -c Release -o dist
+          dotnet nuget push "dist/*.nupkg" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN" --skip-duplicate
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ steps.version.outputs.semVer }}
+
+      # The recognition worker, multi-arch: one amd64 builder cross-builds linux/amd64 and linux/arm64.
+      - name: Build and push the recognition image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/recognition/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
